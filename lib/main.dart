@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 
-class Counter with ChangeNotifier{
-
+class Counter with ChangeNotifier {
   int _value = 0;
   int _step = 1;
   bool _pause = false;
 
   int get counter => _value;
+
   int get step => _step;
+
   bool get isPaused => _pause;
 
   void incrementStep() {
@@ -28,15 +29,14 @@ class Counter with ChangeNotifier{
   }
 
   Stream<int> countStream() async* {
-    while(true) {
+    while (true) {
       await Future.delayed(const Duration(seconds: 1));
-      if(!_pause) {
+      if (!_pause) {
         _value += _step;
         yield _value;
       }
     }
   }
-
 }
 
 void main() {
@@ -53,29 +53,32 @@ class MyApp extends StatelessWidget {
           create: (context) => Counter(),
         ),
         StreamProvider<int>(
-          create: (context) => Provider.of<Counter>(context, listen: false).countStream(),
+          create: (context) =>
+              Provider.of<Counter>(context, listen: false).countStream(),
           initialData: 0,
           catchError: (context, error) {
             print(error.toString());
             return 0;
           },
         ),
-        ],
-        child: MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-          ),
-          home: MyHomePage(title: 'Flutter Demo Home Page'),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-      );
+        home: MyHomePage(title: 'Flutter Demo Home Page'),
+      ),
+    );
   }
 }
 
 class MyHomePage extends StatelessWidget {
   final title;
+
   MyHomePage({this.title});
+
   @override
   Widget build(BuildContext context) {
     print("Homepage rebuild");
@@ -98,24 +101,16 @@ class MyHomePage extends StatelessWidget {
                 );
               },
             ),
-            Consumer<Counter>(
-              builder: (context, counter, child) {
-                return Text(
-                    'Step: ${counter.step}',
-                    style: Theme.of(context).textTheme.headline5
-                );
-              }
-            ),
-            Consumer<Counter>(
-              builder:(context, counter, child) {
-                return RaisedButton(
-                  child: (counter.isPaused) ?
-                      Text('resume')
-                  : Text('pause'),
-                  onPressed: () => counter.pauseCounter(),
-                );
-              }
-            )
+            Consumer<Counter>(builder: (context, counter, child) {
+              return Text('Step: ${counter.step}',
+                  style: Theme.of(context).textTheme.headline5);
+            }),
+            Consumer<Counter>(builder: (context, counter, child) {
+              return RaisedButton(
+                child: (counter.isPaused) ? Text('resume') : Text('pause'),
+                onPressed: () => counter.pauseCounter(),
+              );
+            })
           ],
         ),
       ),
@@ -123,16 +118,14 @@ class MyHomePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           FloatingActionButton(
-            onPressed: () => {
-              Provider.of<Counter>(context, listen: false).incrementStep()
-            },
+            onPressed: () =>
+                {Provider.of<Counter>(context, listen: false).incrementStep()},
             tooltip: 'Increment step',
             child: Icon(Icons.add),
           ),
           FloatingActionButton(
-            onPressed: () => {
-              Provider.of<Counter>(context, listen: false).decrementStep()
-            },
+            onPressed: () =>
+                {Provider.of<Counter>(context, listen: false).decrementStep()},
             tooltip: 'Decrement step',
             child: Icon(Icons.remove),
           ),
