@@ -13,6 +13,10 @@ class Counter with ChangeNotifier {
 
   bool get isPaused => _pause;
 
+  void _incrementCounter () {
+    _value += _step;
+  }
+
   void incrementStep() {
     _step += 1;
     notifyListeners();
@@ -32,7 +36,7 @@ class Counter with ChangeNotifier {
     while (true) {
       await Future.delayed(const Duration(seconds: 1));
       if (!_pause) {
-        _value += _step;
+        _incrementCounter();
         yield _value;
       }
     }
